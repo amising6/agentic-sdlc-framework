@@ -218,3 +218,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Agentic SDLC exclusions
+.venv/
+.env
+.env.*
+!.env.example
+artifacts/
