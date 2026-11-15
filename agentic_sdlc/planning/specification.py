@@ -51,4 +51,33 @@ def generate_specification(state: WorkflowState):
         "",
     ])
 
+    if "ai_analysis" in state.artifacts:
+        insights = state.artifacts["ai_analysis"]
+
+        lines.extend([
+            "",
+            "## AI Advisory Analysis",
+            "",
+            "The following findings require human review.",
+            "",
+            "### Recommended Technical Approach",
+            "",
+            insights["technical_approach"],
+            "",
+        ])
+
+        for field, heading in (
+            ("recommended_components", "Components"),
+            ("risks", "Risks"),
+            ("edge_cases", "Edge Cases"),
+            ("assumptions", "Unapproved Assumptions"),
+            ("open_questions", "Open Questions"),
+        ):
+            lines.extend([f"### {heading}", ""])
+
+            for item in insights[field]:
+                lines.append(f"- {item}")
+
+            lines.append("")
+
     state.artifacts["specification"] = "\n".join(lines)

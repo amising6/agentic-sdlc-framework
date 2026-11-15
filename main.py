@@ -10,6 +10,7 @@ from agentic_sdlc.core.orchestrator import Orchestrator
 from agentic_sdlc.core.state import WorkflowState
 from agentic_sdlc.intelligence.ai_analyzer import analyze_with_ai
 from agentic_sdlc.intelligence.analyzer import analyze_requirement
+from agentic_sdlc.planning.ai_planner import plan_with_ai
 from agentic_sdlc.planning.planner import create_plan
 from agentic_sdlc.planning.specification import generate_specification
 from agentic_sdlc.providers.factory import create_provider
@@ -64,7 +65,13 @@ def main():
             partial(analyze_with_ai, provider=provider),
         )
 
-    orchestrator.register("planning", create_plan)
+    if args.provider == "offline":
+        orchestrator.register("planning", create_plan)
+    else:
+        orchestrator.register(
+            "ai_planning",
+            partial(plan_with_ai, provider=provider),
+        )
     orchestrator.register("specification", generate_specification)
 
     result = orchestrator.run(state)
