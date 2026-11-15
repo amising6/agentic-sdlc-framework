@@ -1,7 +1,7 @@
 """Shared state for the Agentic SDLC workflow."""
 
 from dataclasses import dataclass, field
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from enum import Enum
 from uuid import uuid4
 

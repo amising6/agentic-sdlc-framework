@@ -4,8 +4,12 @@ import argparse
 import json
 from pathlib import Path
 
+from agentic_sdlc.core.artifacts import save_artifacts
 from agentic_sdlc.core.orchestrator import Orchestrator
 from agentic_sdlc.core.state import WorkflowState
+from agentic_sdlc.intelligence.analyzer import analyze_requirement
+from agentic_sdlc.planning.planner import create_plan
+from agentic_sdlc.planning.specification import generate_specification
 
 
 def initialize(state: WorkflowState):
@@ -36,8 +40,13 @@ def main():
 
     orchestrator = Orchestrator()
     orchestrator.register("initialization", initialize)
+    orchestrator.register("intelligence", analyze_requirement)
+    orchestrator.register("planning", create_plan)
+    orchestrator.register("specification", generate_specification)
 
     result = orchestrator.run(state)
+    output = save_artifacts(result)
+    print(f"Artifacts saved to: {output}")
 
     print(json.dumps({
         "run_id": result.run_id,
