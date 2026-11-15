@@ -17,7 +17,7 @@ The framework aims to progressively transform business
 requirements into technical designs, implementation plans,
 source code, tests and validation evidence.
 
-## Current Milestone — v0.1.0
+## Current Milestone  v0.1.0
 
 Part 1: From Business Intent to AI-Powered Technical Planning.
 
