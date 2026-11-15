@@ -2,14 +2,17 @@
 
 import argparse
 import json
+from functools import partial
 from pathlib import Path
 
 from agentic_sdlc.core.artifacts import save_artifacts
 from agentic_sdlc.core.orchestrator import Orchestrator
 from agentic_sdlc.core.state import WorkflowState
+from agentic_sdlc.intelligence.ai_analyzer import analyze_with_ai
 from agentic_sdlc.intelligence.analyzer import analyze_requirement
 from agentic_sdlc.planning.planner import create_plan
 from agentic_sdlc.planning.specification import generate_specification
+from agentic_sdlc.providers.factory import create_provider
 
 
 def initialize(state: WorkflowState):
@@ -30,6 +33,17 @@ def main():
         help="Path to a requirement file",
     )
 
+    parser.add_argument(
+        "--provider",
+        choices=["offline", "ollama"],
+        default="offline",
+    )
+
+    parser.add_argument(
+        "--model",
+        default=None,
+    )
+
     args = parser.parse_args()
 
     requirement = Path(
@@ -41,6 +55,15 @@ def main():
     orchestrator = Orchestrator()
     orchestrator.register("initialization", initialize)
     orchestrator.register("intelligence", analyze_requirement)
+    if args.provider != "offline":
+        provider = create_provider(
+            args.provider, args.model
+        )
+        orchestrator.register(
+            "ai_intelligence",
+            partial(analyze_with_ai, provider=provider),
+        )
+
     orchestrator.register("planning", create_plan)
     orchestrator.register("specification", generate_specification)
 
